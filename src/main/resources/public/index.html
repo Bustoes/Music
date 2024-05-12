@@ -31,9 +31,9 @@
                       style="padding-left: 50px;">
                     <div class="form-group">
                         <img src="images/logo2.png" style="display: block; padding: 20px 151px">
-                        <div class="erweima"><img src="images/二维码2.jpg" style="position: absolute;width: 130px;
+                        <div class="erweima"><img src="images/photo.jpg" style="position: absolute;width: 130px;
 						height: 130px;bottom: 136px;right: 31px;">
-                            <p style="position: absolute;right: 64px;bottom: 106px;">联系我们</p>
+                            <p style="position: absolute;right: 64px;bottom: 106px;"></p>
                         </div>
                         <label class="col-sm-2 control-label">
                             <span class="glyphicon glyphicon-user">账号</span>
@@ -97,7 +97,7 @@
                                 <input type="text" id="songName" name="songName" class="form-control"
                                        placeholder="为音乐而生">
                                 <span class="input-group-btn">
-								 <button onclick="getList2($('#songName').serialize())" class="btn btn-default"
+								 <button onclick="songSearch($('#songName').serialize())" class="btn btn-default"
                                          type="button">
 									搜索
 								</button>
@@ -153,7 +153,7 @@
 --><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
 <div class="big4">
     <div class="gedan">
-        <div class="dazi"><p>音 乐 推 荐
+        <div class="dazi"><p>音 乐 列 表
             <p></div>
         <div class="xiaodaohang">
             <ul class="clearfix">
@@ -191,11 +191,12 @@
             songList: [],
         },
         methods: {
-            songSearch() {
+            songSearch(str) {
                 let _this = this
                 $.ajax({
                     url: "musicLink/getSongRearch",
                     type: "POST",
+                    data: str,
                     success: function (data) {
                         if (data.code === 200) {
                             _this.songList = data.data
@@ -218,7 +219,10 @@
             },
         },
         mounted() {
-            this.songSearch()
+            this.songSearch(null)
+        },
+        created() {
+            window.songSearch = this.songSearch
         }
     })
 
@@ -238,45 +242,6 @@
         }
     });//已在mymusic中注释
 
-
-    //
-    //
-    //            获取榜单
-    //
-    //
-
-    /* 音乐搜索 */
-
-    function getList2(lll) {
-        test
-        $.ajax({
-            url: "musicLink/getSongRearch",
-            type: "POST",
-            data: lll,
-            success: function (data) {
-                if (data.code == 200) {
-                    var search = document.getElementById("songName").value;
-                    $.cookie("song_search", search, {expires: 7, path: "/"});
-                    window.open("/musicSearchTest.html");
-                    var str = '';
-                    /* data.data.list.length对应respon.map.list.length */
-                    for (var i = 0; i < data.data.length; i++) {
-                        str += '<tr>'
-                            + '<td>' + data.data[i].mlSongname + '</td>'
-                            + '<td>' + data.data[i].mlSinger + '</td>'
-                            /* + '<td>' + data.data.list[i].ml_songLink + '</td>' */
-                            + '</tr>';
-                    }
-                    $("table tbody").html(str);
-                } else if (data.code != 200) {
-                    alert("搜索不到歌曲,请重新输入！");
-                }
-            },
-            error: function (data) {
-                alert(JSON.stringify(data));
-            }
-        })
-    }//已在mymusic中注释
 
 </script>
 
